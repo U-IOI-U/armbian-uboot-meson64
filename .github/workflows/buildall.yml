@@ -1,0 +1,120 @@
+# This is a basic workflow that is manually triggered
+
+name: Build Armbian uboot
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      branch:
+        description: 'armbian uboot build branch'
+        default: 'v2022.10'
+        required: true
+        type: string
+
+env:
+  TZ: Asia/Shanghai
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "greet"
+  build:
+    strategy:
+      matrix:
+        config: ["n1 | libretech-s905d-pc_defconfig", "q5 | p201_defconfig", "mi3s | p212_defconfig", "cm311-1a | u200_defconfig"]
+    # The type of runner that the job will run on
+    runs-on: ubuntu-22.04
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Runs a single command using the runners shell
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Set Jop Summary
+      run: |
+        config_device="${{ matrix.config }}"
+        uboot_config=`echo $config_device | sed 's/ //g' | awk -F '|' '{print $2}'`
+        uboot_device=`echo $config_device | sed 's/ //g' | awk -F '|' '{print $1}'`
+
+        echo "**matrix.config**  : ${{ matrix.config }}" >> $GITHUB_STEP_SUMMARY
+        echo "**branch**         : ${{ github.event.inputs.branch }}" >> $GITHUB_STEP_SUMMARY
+        echo "**config**         : $uboot_config" >> $GITHUB_STEP_SUMMARY
+        echo "**device**         : $uboot_device" >> $GITHUB_STEP_SUMMARY
+
+        echo "uboot_config=$uboot_config" >> $GITHUB_ENV
+        echo "uboot_device=$uboot_device" >> $GITHUB_ENV
+
+    - name: Initialization environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+        sudo -E apt-get -qq update
+        sudo -E apt-get -qq install -y $(curl -fsSL https://is.gd/depend_ubuntu2204_armbian)
+        sudo -E apt-get -qq autoremove --purge
+        sudo -E apt-get -qq clean
+        sudo timedatectl set-timezone "$TZ"
+        sudo mkdir -p /workdir
+        sudo chown $USER:$GROUPS /workdir
+        echo "COMPILE_STARTINGTIME=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_ENV
+
+    - name: Checkout U-Boot
+      run: |
+        git config --global init.defaultBranch dev
+        git config --global user.email "74693141+U-IOI-U@users.noreply.github.com"
+        git config --global user.name "U-IOI-U"
+
+        echo "Git Clone https://github.com/u-boot/u-boot.git:${{ github.event.inputs.branch }}"
+        git clone -q -b ${{ github.event.inputs.branch }} --depth=1 https://github.com/u-boot/u-boot.git u-boot
+
+    - name: Copy Config And Apply Patch
+      run: |
+        cd u-boot
+        for i in `find ../${{ github.event.inputs.branch }}/config/ -type f 2>/dev/null`; do
+          if [ -f "$i" ]; then
+            echo "Copy [ $i ]"
+            cp -f "$i" configs/
+          fi
+        done
+
+        bash ../scripts/apply_patch.sh ${{ github.event.inputs.branch }}
+
+    - name: Build Armbian Uboot
+      id: build
+      env:
+        CROSS_COMPILE: "aarch64-linux-gnu-"
+        ARCH: "arm64"
+      run: |
+        cd u-boot
+        make clean
+        make "${{ env.uboot_config }}"
+        make
+
+    - name: Copy Files
+      run: |
+        cd u-boot
+        if [ -f "u-boot.bin" ]; then
+          echo "Copy [ u-boot.bin ]"
+          cp u-boot.bin /workdir/uboot.${{ env.uboot_device }}
+        fi
+
+#    - name:  Upload Artifact
+#      uses: actions/upload-artifact@v4.1.0
+#      with:
+#        name: output
+#        path: /workdir/*
+
+    - name: Upload file to Release
+      uses: ncipollo/release-action@main
+      with:
+        tag: UBOOT_${{ github.event.inputs.branch }}_${{ env.COMPILE_STARTINGTIME }}
+        makeLatest: true
+        artifacts: /workdir/*
+        allowUpdates: true
+        token: ${{ secrets.GH_TOKEN }}
+        body: |
+          This is Armbian uboot
