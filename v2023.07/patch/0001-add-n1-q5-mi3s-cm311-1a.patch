@@ -16,9 +16,9 @@ index 402b8a2c..282cfccc 100644
 --- a/configs/libretech-s905d-pc_defconfig
 +++ b/configs/libretech-s905d-pc_defconfig
 @@ -83,3 +83,11 @@ CONFIG_BMP_16BPP=y
+ CONFIG_BMP_16BPP=y
  CONFIG_BMP_24BPP=y
  CONFIG_BMP_32BPP=y
- CONFIG_OF_LIBFDT_OVERLAY=y
 +
 +# Debug
 +CONFIG_BOOTCOMMAND="run start_autoscript; run distro_bootcmd"
@@ -32,9 +32,9 @@ index b61d34f2..a1d6affb 100644
 --- a/configs/p201_defconfig
 +++ b/configs/p201_defconfig
 @@ -42,3 +42,29 @@ CONFIG_DEBUG_UART_ANNOUNCE=y
+ CONFIG_DEBUG_UART_ANNOUNCE=y
  CONFIG_DEBUG_UART_SKIP_INIT=y
  CONFIG_MESON_SERIAL=y
- CONFIG_OF_LIBFDT_OVERLAY=y
 +
 +# Debug
 +#CONFIG_POWER_DOMAIN=y
@@ -66,9 +66,9 @@ index 55092f32..68e5ef98 100644
 --- a/configs/p212_defconfig
 +++ b/configs/p212_defconfig
 @@ -50,3 +50,26 @@ CONFIG_USB_XHCI_DWC3=y
+ CONFIG_USB_XHCI_DWC3=y
  CONFIG_USB_DWC3=y
  CONFIG_USB_DWC3_MESON_GXL=y
- CONFIG_OF_LIBFDT_OVERLAY=y
 +
 +# Debug
 +#CONFIG_POWER_DOMAIN=y
@@ -97,9 +97,9 @@ index b4f2f21d..d3b700d9 100644
 --- a/configs/u200_defconfig
 +++ b/configs/u200_defconfig
 @@ -56,3 +56,25 @@ CONFIG_USB_GADGET_DWC2_OTG=y
+ CONFIG_USB_GADGET_DWC2_OTG=y
  CONFIG_USB_GADGET_DWC2_OTG_PHY_BUS_WIDTH_8=y
  CONFIG_USB_GADGET_DOWNLOAD=y
- CONFIG_OF_LIBFDT_OVERLAY=y
 +
 +# debug
 +CONFIG_DM_VIDEO=y
