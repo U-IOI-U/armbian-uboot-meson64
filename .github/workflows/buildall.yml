@@ -12,7 +12,11 @@ on:
         description: 'armbian uboot build branch'
         default: 'v2022.10'
         required: true
-        type: string
+        type: choice
+        options:
+          - 'v2022.10'
+          - 'v2023.01'
+          - 'v2023.04'
 
 env:
   TZ: Asia/Shanghai
