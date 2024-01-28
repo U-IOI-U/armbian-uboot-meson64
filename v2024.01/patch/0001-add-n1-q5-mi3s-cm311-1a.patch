@@ -1,0 +1,144 @@
+From 78bb9d265d4637b1e98d31eecf41041db7d5c10e Mon Sep 17 00:00:00 2001
+From: U-IOI-U <74693141+U-IOI-U@users.noreply.github.com>
+Date: Fri, 26 Jan 2024 16:06:49 +0800
+Subject: [PATCH 1/1] add n1 q5 mi3s cm311-1a
+
+---
+ configs/libretech-s905d-pc_defconfig |  8 ++++++++
+ configs/p201_defconfig               | 26 ++++++++++++++++++++++++++
+ configs/p212_defconfig               | 23 +++++++++++++++++++++++
+ configs/u200_defconfig               | 22 ++++++++++++++++++++++
+ include/configs/meson64.h            |  6 ++++++
+ 5 files changed, 85 insertions(+)
+
+diff --git a/configs/libretech-s905d-pc_defconfig b/configs/libretech-s905d-pc_defconfig
+index 402b8a2c..282cfccc 100644
+--- a/configs/libretech-s905d-pc_defconfig
++++ b/configs/libretech-s905d-pc_defconfig
+@@ -83,3 +83,11 @@ CONFIG_BMP_16BPP=y
+ CONFIG_BMP_16BPP=y
+ CONFIG_BMP_24BPP=y
+ CONFIG_BMP_32BPP=y
++
++# Debug
++CONFIG_BOOTCOMMAND="run start_autoscript; run distro_bootcmd"
++# Coreelec
++CONFIG_ANDROID_BOOT_IMAGE=y
++CONFIG_CMD_ABOOTIMG=y
++CONFIG_CMD_ADTIMG=y
++CONFIG_LZO=y
+diff --git a/configs/p201_defconfig b/configs/p201_defconfig
+index b61d34f2..a1d6affb 100644
+--- a/configs/p201_defconfig
++++ b/configs/p201_defconfig
+@@ -42,3 +42,29 @@ CONFIG_DEBUG_UART_ANNOUNCE=y
+ CONFIG_DEBUG_UART_ANNOUNCE=y
+ CONFIG_DEBUG_UART_SKIP_INIT=y
+ CONFIG_MESON_SERIAL=y
++
++# Debug
++#CONFIG_POWER_DOMAIN=y
++#CONFIG_MESON_GX_VPU_POWER_DOMAIN=y
++CONFIG_DM_VIDEO=y
++CONFIG_VIDEO_MESON=y
++CONFIG_VIDEO_DT_SIMPLEFB=y
++#CONFIG_CMD_ADC=y
++#CONFIG_SARADC_MESON=y
++#CONFIG_DISPLAY_BOARDINFO_LATE=y
++CONFIG_DM_KEYBOARD=y
++CONFIG_USB_KEYBOARD=y
++CONFIG_BOOTDELAY=3
++CONFIG_USE_PREBOOT=y
++CONFIG_CMD_USB=y
++CONFIG_USB=y
++CONFIG_DM_USB=y
++CONFIG_USB_HOST=y
++CONFIG_USB_DWC2=y
++CONFIG_USB_STORAGE=y
++CONFIG_BOOTCOMMAND="run start_autoscript; run distro_bootcmd"
++# Coreelec
++CONFIG_ANDROID_BOOT_IMAGE=y
++CONFIG_CMD_ABOOTIMG=y
++CONFIG_CMD_ADTIMG=y
++CONFIG_LZO=y
+diff --git a/configs/p212_defconfig b/configs/p212_defconfig
+index 55092f32..68e5ef98 100644
+--- a/configs/p212_defconfig
++++ b/configs/p212_defconfig
+@@ -50,3 +50,26 @@ CONFIG_USB_XHCI_DWC3=y
+ CONFIG_USB_XHCI_DWC3=y
+ CONFIG_USB_DWC3=y
+ CONFIG_USB_DWC3_MESON_GXL=y
++
++# Debug
++#CONFIG_POWER_DOMAIN=y
++#CONFIG_MESON_GX_VPU_POWER_DOMAIN=y
++CONFIG_DM_VIDEO=y
++CONFIG_VIDEO_MESON=y
++CONFIG_VIDEO_DT_SIMPLEFB=y
++#CONFIG_CMD_ADC=y
++#CONFIG_SARADC_MESON=y
++#CONFIG_DISPLAY_BOARDINFO_LATE=y
++CONFIG_DM_KEYBOARD=y
++CONFIG_USB_KEYBOARD=y
++CONFIG_BOOTDELAY=3
++CONFIG_USE_PREBOOT=y
++CONFIG_USB_DWC2=y
++CONFIG_USB_HOST=y
++CONFIG_USB_STORAGE=y
++CONFIG_BOOTCOMMAND="run start_autoscript; run distro_bootcmd"
++# Coreelec
++CONFIG_ANDROID_BOOT_IMAGE=y
++CONFIG_CMD_ABOOTIMG=y
++CONFIG_CMD_ADTIMG=y
++CONFIG_LZO=y
+diff --git a/configs/u200_defconfig b/configs/u200_defconfig
+index b4f2f21d..d3b700d9 100644
+--- a/configs/u200_defconfig
++++ b/configs/u200_defconfig
+@@ -56,3 +56,25 @@ CONFIG_USB_GADGET_DWC2_OTG=y
+ CONFIG_USB_GADGET_DWC2_OTG=y
+ CONFIG_USB_GADGET_DWC2_OTG_PHY_BUS_WIDTH_8=y
+ CONFIG_USB_GADGET_DOWNLOAD=y
++
++# debug
++CONFIG_DM_VIDEO=y
++CONFIG_VIDEO_MESON=y
++CONFIG_VIDEO_DT_SIMPLEFB=y
++#CONFIG_CMD_ADC=y
++#CONFIG_SARADC_MESON=y
++#CONFIG_DISPLAY_BOARDINFO_LATE=y
++CONFIG_DM_KEYBOARD=y
++CONFIG_USB_KEYBOARD=y
++CONFIG_BOOTDELAY=3
++#CONFIG_USE_PREBOOT=y
++#CONFIG_USB_DWC2=y
++#CONFIG_USB_HOST=y
++#CONFIG_USB_STORAGE=y
++CONFIG_BOOTCOMMAND="run start_autoscript; run distro_bootcmd"
++# Coreelec
++CONFIG_ANDROID_BOOT_IMAGE=y
++CONFIG_CMD_ABOOTIMG=y
++CONFIG_CMD_ADTIMG=y
++CONFIG_LZO=y
++#CONFIG_LOG=y
+diff --git a/include/configs/meson64.h b/include/configs/meson64.h
+index 40803ee9..dcd6af08 100644
+--- a/include/configs/meson64.h
++++ b/include/configs/meson64.h
+@@ -135,6 +135,12 @@
+ 	"ramdisk_addr_r=" RAMDISK_ADDR_R "\0" \
+ 	"fdtfile=amlogic/" CONFIG_DEFAULT_DEVICE_TREE ".dtb\0" \
+ 	"dfu_alt_info=fitimage ram " KERNEL_ADDR_R " 0x4000000 \0" \
++	"uboot_new=1\0" \
++	"loadaddr=0x01080000\0" \
++	"start_autoscript=if mmcinfo; then run start_mmc_autoscript; fi; if usb start; then run start_usb_autoscript; go 0x1000000; else go 0x1000000; fi; run start_emmc_autoscript\0" \
++	"start_emmc_autoscript=if fatload mmc 1 1020000 emmc_autoscript; then source 1020000; fi;\0" \
++	"start_mmc_autoscript=if fatload mmc 0 1020000 s905_autoscript; then source 1020000; fi;\0" \
++	"start_usb_autoscript=for usbdev in 0 1 2 3; do if fatload usb ${usbdev} 1020000 s905_autoscript; then source 1020000; fi; done\0" \
+ 	BOOTENV
+ #endif
+ 
+-- 
+2.25.1
+
