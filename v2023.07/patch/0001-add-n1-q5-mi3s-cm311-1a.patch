@@ -44,7 +44,7 @@ index b61d34f2..a1d6affb 100644
 +CONFIG_VIDEO_DT_SIMPLEFB=y
 +#CONFIG_CMD_ADC=y
 +#CONFIG_SARADC_MESON=y
-+#CONFIG_DISPLAY_BOARDINFO_LATE=y
++CONFIG_DISPLAY_BOARDINFO_LATE=y
 +CONFIG_DM_KEYBOARD=y
 +CONFIG_USB_KEYBOARD=y
 +CONFIG_BOOTDELAY=3
@@ -78,7 +78,7 @@ index 55092f32..68e5ef98 100644
 +CONFIG_VIDEO_DT_SIMPLEFB=y
 +#CONFIG_CMD_ADC=y
 +#CONFIG_SARADC_MESON=y
-+#CONFIG_DISPLAY_BOARDINFO_LATE=y
++CONFIG_DISPLAY_BOARDINFO_LATE=y
 +CONFIG_DM_KEYBOARD=y
 +CONFIG_USB_KEYBOARD=y
 +CONFIG_BOOTDELAY=3
@@ -107,7 +107,7 @@ index b4f2f21d..d3b700d9 100644
 +CONFIG_VIDEO_DT_SIMPLEFB=y
 +#CONFIG_CMD_ADC=y
 +#CONFIG_SARADC_MESON=y
-+#CONFIG_DISPLAY_BOARDINFO_LATE=y
++CONFIG_DISPLAY_BOARDINFO_LATE=y
 +CONFIG_DM_KEYBOARD=y
 +CONFIG_USB_KEYBOARD=y
 +CONFIG_BOOTDELAY=3
@@ -132,7 +132,7 @@ index 40803ee9..dcd6af08 100644
  	"fdtfile=amlogic/" CONFIG_DEFAULT_DEVICE_TREE ".dtb\0" \
 +	"uboot_new=1\0" \
 +	"loadaddr=0x01080000\0" \
-+	"start_autoscript=if mmcinfo; then run start_mmc_autoscript; fi; if usb start; then run start_usb_autoscript; go 0x1000000; else go 0x1000000; fi; run start_emmc_autoscript\0" \
++	"start_autoscript=if mmcinfo; then run start_mmc_autoscript; fi; if usb start; then run start_usb_autoscript; else go 0x1000000; fi; run start_emmc_autoscript; go 0x1000000\0" \
 +	"start_emmc_autoscript=if fatload mmc 1 1020000 emmc_autoscript; then source 1020000; fi;\0" \
 +	"start_mmc_autoscript=if fatload mmc 0 1020000 s905_autoscript; then source 1020000; fi;\0" \
 +	"start_usb_autoscript=for usbdev in 0 1 2 3; do if fatload usb ${usbdev} 1020000 s905_autoscript; then source 1020000; fi; done\0" \
