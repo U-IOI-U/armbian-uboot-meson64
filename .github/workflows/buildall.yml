@@ -125,7 +125,6 @@ jobs:
       uses: ncipollo/release-action@main
       with:
         tag: UBOOT_${{ github.event.inputs.branch }}_${{ env.COMPILE_STARTINGTIME }}
-        makeLatest: true
         artifacts: /workdir/*
         allowUpdates: true
         token: ${{ secrets.GH_TOKEN }}
